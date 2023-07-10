@@ -129,7 +129,6 @@ where
                     Some(ref f) => DateTime::<FixedOffset>::parse_from_str(&value, &f.clone()),
                     None => DateTime::<FixedOffset>::parse_from_str(&value, "%Y-%m-%dT%H:%M:%S%:z"),
                 };
-                log::debug!("{parse_result:?}");
                 if let Ok(v) = parse_result {
                     on_change(v.into());
                 }
