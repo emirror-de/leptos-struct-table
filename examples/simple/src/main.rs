@@ -1,3 +1,4 @@
+use crate::uuid::Uuid;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use leptos::*;
@@ -9,7 +10,7 @@ use serde::{Deserialize, Serialize};
 #[table(sortable)]
 pub struct Book {
     #[table(key, editable)]
-    pub id: u32,
+    pub id: Uuid,
     pub title: String,
     #[table(editable)]
     pub author: String,
@@ -28,7 +29,7 @@ fn main() {
             cx,
             vec![
                 Book {
-                    id: 1,
+                    id: Uuid::default(),
                     title: "The Great Gatsby".to_string(),
                     author: "F. Scott Fitzgerald".to_string(),
                     publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
@@ -37,7 +38,7 @@ fn main() {
                     hidden_field: "hidden".to_string(),
                 },
                 Book {
-                    id: 2,
+                    id: Uuid::default(),
                     title: "The Grapes of Wrath".to_string(),
                     author: "John Steinbeck".to_string(),
                     publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
@@ -46,7 +47,7 @@ fn main() {
                     hidden_field: "not visible in the table".to_string(),
                 },
                 Book {
-                    id: 3,
+                    id: Uuid::default(),
                     title: "Nineteen Eighty-Four".to_string(),
                     author: "George Orwell".to_string(),
                     publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
@@ -55,7 +56,7 @@ fn main() {
                     hidden_field: "hidden".to_string(),
                 },
                 Book {
-                    id: 4,
+                    id: Uuid::default(),
                     title: "Ulysses".to_string(),
                     author: "James Joyce".to_string(),
                     publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
