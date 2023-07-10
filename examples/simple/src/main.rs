@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use chrono::NaiveDate;
+use chrono::{DateTime, Utc};
 use leptos::*;
 use leptos_struct_table::*;
 use serde::{Deserialize, Serialize};
@@ -13,7 +13,8 @@ pub struct Book {
     pub title: String,
     #[table(editable)]
     pub author: String,
-    pub publish_date: NaiveDate,
+    #[table(editable, format(string = "%Y-%m-%d %H:%M:%S %z"))]
+    pub publish_date: DateTime<Utc>,
     #[table(skip)]
     pub hidden_field: String,
 }
@@ -30,28 +31,36 @@ fn main() {
                     id: 1,
                     title: "The Great Gatsby".to_string(),
                     author: "F. Scott Fitzgerald".to_string(),
-                    publish_date: NaiveDate::from_ymd_opt(1925, 4, 10).unwrap(),
+                    publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
+                        .unwrap()
+                        .into(),
                     hidden_field: "hidden".to_string(),
                 },
                 Book {
                     id: 2,
                     title: "The Grapes of Wrath".to_string(),
                     author: "John Steinbeck".to_string(),
-                    publish_date: NaiveDate::from_ymd_opt(1939, 4, 14).unwrap(),
+                    publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
+                        .unwrap()
+                        .into(),
                     hidden_field: "not visible in the table".to_string(),
                 },
                 Book {
                     id: 3,
                     title: "Nineteen Eighty-Four".to_string(),
                     author: "George Orwell".to_string(),
-                    publish_date: NaiveDate::from_ymd_opt(1949, 6, 8).unwrap(),
+                    publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
+                        .unwrap()
+                        .into(),
                     hidden_field: "hidden".to_string(),
                 },
                 Book {
                     id: 4,
                     title: "Ulysses".to_string(),
                     author: "James Joyce".to_string(),
-                    publish_date: NaiveDate::from_ymd_opt(1922, 2, 2).unwrap(),
+                    publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
+                        .unwrap()
+                        .into(),
                     hidden_field: "hidden".to_string(),
                 },
             ],
