@@ -30,18 +30,35 @@ pub fn DefaultTableRowRenderer<K, F>(
     selected: Signal<bool>,
     /// The event handler for the click event. Has to be called with [`TableRowEvent`].
     on_click: F,
+    /// The event handler for the double click event. Has to be called with [`TableRowEvent`].
+    #[prop(optional)]
+    on_double_click: Option<std::rc::Rc<dyn Fn(TableRowEvent<K>) + 'static>>,
     children: Children,
 ) -> impl IntoView
 where
     F: Fn(TableRowEvent<K>) + 'static,
     K: Clone + 'static,
 {
-    view! { cx,
-        <tr class=class on:click=move |mouse_event| on_click(TableRowEvent {
-            key: key.clone(),
+    let click_key = key.clone();
+    let on_click_event = move |mouse_event| {
+        on_click(TableRowEvent {
+            key: click_key.clone(),
             index,
             mouse_event,
-        })>
+        })
+    };
+    let click_key = key.clone();
+    let on_double_click_event = move |mouse_event| {
+        if let Some(ref dbl) = on_double_click {
+            dbl(TableRowEvent {
+                key: click_key.clone(),
+                index,
+                mouse_event,
+            })
+        }
+    };
+    view! { cx,
+        <tr class=class on:click=on_click_event on:dblclick=on_double_click_event>
             {children(cx)}
         </tr>
     }
