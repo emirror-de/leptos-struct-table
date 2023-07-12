@@ -6,6 +6,7 @@ mod chrono;
 pub use self::chrono::*;
 
 use core::fmt::Display;
+use leptos::ev::MouseEvent;
 use leptos::html::Td;
 use leptos::*;
 use std::str::FromStr;
@@ -43,8 +44,19 @@ where
             }
         };
 
+        let on_dbl_click = move |e: MouseEvent| {
+            e.stop_propagation();
+        };
+
         return view! { cx,
-            <td class={ format!("{} editable", class.get()) } node_ref=td_ref on:input=on_input contenteditable>{value}</td>
+            <td
+                class={ format!("{} editable", class.get()) }
+                node_ref=td_ref
+                on:input=on_input
+                on:dblclick=on_dbl_click
+                contenteditable>
+                {value}
+            </td>
         };
     }
 
@@ -93,9 +105,19 @@ where
                 }
             }
         };
+        let on_dbl_click = move |e: MouseEvent| {
+            e.stop_propagation();
+        };
 
         return view! { cx,
-            <td class={ format!("{} editable", class.get()) } node_ref=td_ref on:input=on_input contenteditable>{text}</td>
+            <td
+                class={ format!("{} editable", class.get()) }
+                node_ref=td_ref
+                on:input=on_input
+                on:dblclick=on_dbl_click
+                contenteditable>
+                {text}
+            </td>
         };
     }
 
