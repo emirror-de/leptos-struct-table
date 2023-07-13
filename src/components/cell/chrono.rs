@@ -38,8 +38,8 @@ macro_rules! date_cell_renderer {
                 C: Fn($date_type) + 'static,
             {
                 let text = match format_string.clone() {
-                    Some(format_string) => create_memo(cx, move |_| value().format(&format_string).to_string()),
-                    None => create_memo(cx, move |_| value().to_string()),
+                    Some(format_string) => create_memo(cx, move |_| value.get().format(&format_string).to_string()),
+                    None => create_memo(cx, move |_| value.get().to_string()),
                 };
 
                 if editable {
@@ -74,7 +74,7 @@ macro_rules! date_cell_renderer {
                 }
 
                 view! { cx,
-                    <td class=class>{text}</td>
+                    <td class={move || class.get()}>{text}</td>
                 }
             }
         }
@@ -126,8 +126,10 @@ where
     C: Fn(DateTime<Utc>) + 'static,
 {
     let text = match format_string.clone() {
-        Some(format_string) => create_memo(cx, move |_| value().format(&format_string).to_string()),
-        None => create_memo(cx, move |_| value().to_rfc3339()),
+        Some(format_string) => {
+            create_memo(cx, move |_| value.get().format(&format_string).to_string())
+        }
+        None => create_memo(cx, move |_| value.get().to_rfc3339()),
     };
 
     if editable {
@@ -147,11 +149,11 @@ where
         };
 
         return view! { cx,
-            <td class=class node_ref=td_ref on:input=on_input contenteditable>{text}</td>
+            <td class={move || class.get()} node_ref=td_ref on:input=on_input contenteditable>{text}</td>
         };
     }
 
     view! { cx,
-        <td class=class>{text}</td>
+        <td class={move || class.get()}>{text}</td>
     }
 }

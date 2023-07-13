@@ -61,7 +61,7 @@ where
     }
 
     view! { cx,
-        <td class=class>{value}</td>
+        <td class={move || class.get()}>{value}</td>
     }
 }
 
@@ -90,8 +90,8 @@ where
     C: Fn(T) + 'static,
 {
     let text = create_memo(cx, move |_| match precision {
-        Some(precision) => format!("{:.precision$}", value()),
-        None => format!("{}", value()),
+        Some(precision) => format!("{:.precision$}", value.get()),
+        None => format!("{}", value.get()),
     });
 
     if editable {
@@ -122,6 +122,6 @@ where
     }
 
     view! { cx,
-        <td class=class>{text}</td>
+        <td class={move || class.get()}>{text}</td>
     }
 }

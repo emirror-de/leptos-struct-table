@@ -235,6 +235,7 @@ pub struct TemperatureMeasurement {
 //! # use leptos_struct_table::*;
 //! # use serde::{Deserialize, Serialize};
 //! # use async_trait::async_trait;
+//! # use std::str::FromStr;
 //! #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
 //! pub struct Book {
 //!     #[table(key)]
@@ -246,15 +247,20 @@ pub struct TemperatureMeasurement {
 //!
 //! // Easy cell renderer that just displays an image from an URL.
 //! #[component]
-//! fn ImageTableCellRenderer(
+//! fn ImageTableCellRenderer<C>(
 //!     cx: Scope,
 //!     #[prop(into)] class: MaybeSignal<String>,
 //!     #[prop(into)] value: MaybeSignal<String>,
 //!     index: usize,
-//! ) -> impl IntoView {
+//!     on_change: C,
+//!     editable: bool,
+//! ) -> impl IntoView
+//! where
+//!     C: Fn(String) + 'static,
+//! {
 //!     view! { cx,
-//!         <td class=class>
-//!             <img src=value alt="Book image" height="64"/>
+//!         <td class={ move || class.get() }>
+//!             <img src={ move || value.get() } alt="Book image" height="64"/>
 //!         </td>
 //!     }
 //! }

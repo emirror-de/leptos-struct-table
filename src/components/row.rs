@@ -58,7 +58,7 @@ where
         }
     };
     view! { cx,
-        <tr class=class on:click=on_click_event on:dblclick=on_double_click_event>
+        <tr class={move || class.get()} on:click=on_click_event on:dblclick=on_double_click_event>
             {children(cx)}
         </tr>
     }

@@ -47,13 +47,13 @@ where
     C: 'static + Copy,
 {
     let style = move || {
-        let sort = match sort_direction() {
+        let sort = match sort_direction.get() {
             ColumnSort::Ascending => "--sort-icon: '▲';",
             ColumnSort::Descending => "--sort-icon: '▼';",
             ColumnSort::None => "--sort-icon: '';",
         };
 
-        let priority = match sort_priority() {
+        let priority = match sort_priority.get() {
             Some(priority) => format!("--sort-priority: '{}';", priority + 1),
             None => "--sort-priority: '';".to_string(),
         };
@@ -62,7 +62,7 @@ where
     };
 
     view! { cx,
-        <th class=class
+        <th class={move || class.get()}
             on:click=move |mouse_event| on_click(TableHeadEvent {
                 index,
                 column,
@@ -70,7 +70,7 @@ where
             })
             style=style
         >
-            <span class=inner_class>
+            <span class={inner_class}>
                 {children(cx)}
             </span>
         </th>
