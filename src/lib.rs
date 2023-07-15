@@ -30,16 +30,16 @@
 //!
 //! fn main() {
 //!     mount_to_body(|cx| {
-//!         // Create a few Person items
-//!         let items = create_rw_signal( cx, vec![
+//!         // Create a provider with a few person items
+//!         let provider = store_value( cx, MemoryStorage::new(vec![
 //!             Person { id: 1, name: "John".to_string(), age: 32 },
 //!             Person { id: 2, name: "Jane".to_string(), age: 28 },
 //!             Person { id: 3, name: "Bob".to_string(), age: 45 },
-//!         ]);
+//!         ]));
 //!
 //!         // Use the generated component
 //!         view! { cx,
-//!             <PersonTable items=items />
+//!             <PersonTable data_provider=provider />
 //!         }
 //!     });
 //! }
@@ -87,6 +87,7 @@
 //!    [`DefaultNaiveTimeTableCellRenderer`] are used for [`chrono::NaiveDate`], [`chrono::NaiveDateTime`] and [`chrono::NaiveTime`] respectively.
 //!  - **`format`** - Quick way to customize the formatting of cells without having to create a custom renderer. See [Formatting](#formatting) below for more information.
 //! - **`getter`** - Specifies a method that returns the value of the field instead of accessing the field directly when rendering.
+//! - **`none_value`** - Specifies a display value for `Option` types when they are `None`. Defaults to empty string
 //!
 //! ### Formatting
 //!
@@ -277,19 +278,21 @@ pub struct TemperatureMeasurement {
 
 mod class_providers;
 mod components;
-mod data_provider;
+mod data_storage;
+mod sorting;
 #[cfg(feature = "uuid")]
 pub mod uuid;
 
 pub use class_providers::*;
 pub use components::*;
-pub use data_provider::*;
+pub use data_storage::*;
 pub use leptos_struct_table_macro::TableComponent;
 use serde::{Deserialize, Serialize};
+pub use sorting::*;
 use std::marker::PhantomData;
 
 /// Type of sorting of a column
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub enum ColumnSort {
     Ascending,
     Descending,

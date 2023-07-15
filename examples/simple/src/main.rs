@@ -13,10 +13,11 @@ use serde::{Deserialize, Serialize};
 #[table(sortable)]
 pub struct Book {
     /// Id of the entry.
-    #[table(key, editable)]
+    #[table(key)]
     pub id: Uuid,
     /// Title of the book.
     pub title: String,
+    #[table(editable)]
     /// Author of the book.
     #[table(editable)]
     pub author: String,
@@ -33,9 +34,21 @@ fn main() {
     console_error_panic_hook::set_once();
 
     mount_to_body(|cx| {
-        let items = create_rw_signal(
+        let get_current_provider_state =
+            create_action(cx, move |provider: &StoredValue<MemoryStorage<Book>>| {
+                let p = provider.get_value();
+                async move { p.get_rows(0..1000).await.unwrap() }
+            });
+        let current_provider_state = get_current_provider_state.value();
+        let log_provider_state = move || {
+            log::debug!("Provider state:\n{:#?}", current_provider_state.get());
+        };
+
+        let range_to_show = create_rw_signal(cx, 0..4);
+
+        let provider = store_value(
             cx,
-            vec![
+            MemoryStorage::new(vec![
                 Book {
                     id: Uuid::default(),
                     title: "The Great Gatsby".to_string(),
@@ -72,12 +85,15 @@ fn main() {
                         .into(),
                     hidden_field: "hidden".to_string(),
                 },
-            ],
+            ]),
         );
 
         view! { cx,
-            <BookTable items=items />
-            <button on:click= move |_| log::debug!("{:#?}", items.get_untracked())>"Log current state to console"</button>
+            <BookTable data_provider=provider range=range_to_show />
+            <button on:click=move |_| {
+                get_current_provider_state.dispatch(provider);
+            }>{"Refetch data"}</button>
+            { log_provider_state }
         }
     })
 }

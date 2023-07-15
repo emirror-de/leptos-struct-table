@@ -1,6 +1,6 @@
 [package]
 name = "leptos-struct-table"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 authors = ["Marc-Stefan Cassola"]
 categories = ["gui", "web-programming"]
@@ -12,6 +12,7 @@ readme = "README.md"
 repository = "https://github.com/Synphonyte/leptos-struct-table"
 
 [dependencies]
+anyhow = "1"
 leptos = { version = "0.4", features = ["csr"] }
 leptos-struct-table-macro = { version = "0.3.1", path = "leptos-struct-table-macro" }
 log = "0.4"

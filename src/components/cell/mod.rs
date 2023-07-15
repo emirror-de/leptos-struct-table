@@ -110,15 +110,19 @@ where
         };
 
         return view! { cx,
-            <td
-                class={ format!("{} editable", class.get()) }
-                node_ref=td_ref
-                on:input=on_input
-                on:dblclick=on_dbl_click
-                contenteditable>
-                {text}
-            </td>
-        };
+        <<<<<<< HEAD
+                    <td
+                        class={ format!("{} editable", class.get()) }
+                        node_ref=td_ref
+                        on:input=on_input
+                        on:dblclick=on_dbl_click
+                        contenteditable>
+                        {text}
+                    </td>
+        =======
+                    <td class={ format!("{} editable", class.get()) } node_ref=td_ref on:input=on_input contenteditable>{text}</td>
+        >>>>>>> feature/cell-events
+                };
     }
 
     view! { cx,
