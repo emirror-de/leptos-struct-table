@@ -17,7 +17,6 @@ pub struct Book {
     pub id: Uuid,
     /// Title of the book.
     pub title: String,
-    #[table(editable)]
     /// Author of the book.
     #[table(editable)]
     pub author: String,
