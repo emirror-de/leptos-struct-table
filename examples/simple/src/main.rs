@@ -38,6 +38,24 @@ fn main() {
                 let p = provider.get_value();
                 async move { p.get_rows(0..1000).await.unwrap() }
             });
+        let append_row = create_action(cx, move |provider: &StoredValue<MemoryStorage<Book>>| {
+            let mut p = provider.get_value();
+            async move {
+                log::debug!(
+                    "{:?}",
+                    p.append_row(Book {
+                        id: Uuid::default(),
+                        title: "The Great Gatsby".to_string(),
+                        author: "F. Scott Fitzgerald".to_string(),
+                        publish_date: DateTime::parse_from_rfc3339("1996-12-19T16:39:57+00:00")
+                            .unwrap()
+                            .into(),
+                        hidden_field: "hidden".to_string(),
+                    })
+                    .await
+                );
+            }
+        });
         let current_provider_state = get_current_provider_state.value();
         let log_provider_state = move || {
             log::debug!("Provider state:\n{:#?}", current_provider_state.get());
@@ -91,7 +109,10 @@ fn main() {
             <BookTable data_provider=provider range=range_to_show />
             <button on:click=move |_| {
                 get_current_provider_state.dispatch(provider);
-            }>{"Refetch data"}</button>
+            }>{"Log current state to console"}</button>
+            <button on:click=move |_| {
+                append_row.dispatch(provider);
+            }>{"Append first row"}</button>
             { log_provider_state }
         }
     })
