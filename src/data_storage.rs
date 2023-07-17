@@ -28,6 +28,9 @@ where
 
     /// Updates the value of the row at `index` to the value of `row` in the implementing storage.
     async fn set_row(&mut self, index: usize, row: T) -> anyhow::Result<()>;
+
+    /// Appends the row to the end of the table data.
+    async fn append_row(&mut self, row: T) -> anyhow::Result<()>;
 }
 
 /// A basic storage implementation that keeps the given data on initialization
@@ -64,6 +67,12 @@ where
             }
             None => log::warn!("Could not find row with index {index} to update."),
         }
+        Ok(())
+    }
+
+    async fn append_row(&mut self, row: T) -> anyhow::Result<()> {
+        let mut write_lock = self.data.try_write().map_err(|e| anyhow::anyhow!("{e}"))?;
+        write_lock.push(row);
         Ok(())
     }
 }
