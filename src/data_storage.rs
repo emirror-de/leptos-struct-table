@@ -14,9 +14,10 @@ use std::sync::RwLock;
 ///
 /// Please note that because of the use of [`async-trait`](https://docs.rs/async-trait/latest/async_trait/) this documentation is a bit cluttered.
 #[async_trait(?Send)]
-pub trait TableDataStorage<T>
+pub trait TableDataStorage<T, K>
 where
     T: Debug + PartialEq + Clone,
+    K: PartialEq,
     Self: Clone,
 {
     /// Get all data rows for the table specified by the range.
@@ -27,10 +28,19 @@ where
     async fn get_rows(&self, range: Range<usize>) -> anyhow::Result<Vec<T>>;
 
     /// Updates the value of the row at `index` to the value of `row` in the implementing storage.
-    async fn set_row(&mut self, index: usize, row: T) -> anyhow::Result<()>;
+    async fn set_row(&mut self, key: K, row: T) -> anyhow::Result<()>;
 
     /// Appends the row to the end of the table data.
     async fn append_row(&mut self, row: T) -> anyhow::Result<()>;
+}
+
+/// Properties of an entry in a table.
+pub trait TableDataEntry<K>
+where
+    K: PartialEq + Clone,
+{
+    /// Cloned unique identifier of the entry.
+    fn key(&self) -> K;
 }
 
 /// A basic storage implementation that keeps the given data on initialization
@@ -50,22 +60,23 @@ impl<T> MemoryStorage<T> {
 }
 
 #[async_trait(?Send)]
-impl<T> TableDataStorage<T> for MemoryStorage<T>
+impl<T, K> TableDataStorage<T, K> for MemoryStorage<T>
 where
-    T: Debug + PartialEq + Clone,
+    T: Debug + PartialEq + Clone + TableDataEntry<K>,
+    K: PartialEq + core::fmt::Display + Clone + 'static,
 {
     async fn get_rows(&self, range: Range<usize>) -> anyhow::Result<Vec<T>> {
         let read_lock = self.data.try_read().map_err(|e| anyhow::anyhow!("{e}"))?;
         Ok(get_vec_range_clamped(&read_lock, range))
     }
 
-    async fn set_row(&mut self, index: usize, row: T) -> anyhow::Result<()> {
+    async fn set_row(&mut self, key: K, row: T) -> anyhow::Result<()> {
         let mut write_lock = self.data.try_write().map_err(|e| anyhow::anyhow!("{e}"))?;
-        match write_lock.get_mut(index) {
+        match write_lock.iter_mut().find(|it| it.key() == key) {
             Some(r) => {
                 *r = row;
             }
-            None => log::warn!("Could not find row with index {index} to update."),
+            None => log::warn!("Could not find row with identifier {key} to update."),
         }
         Ok(())
     }
