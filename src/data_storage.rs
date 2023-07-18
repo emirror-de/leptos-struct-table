@@ -32,6 +32,9 @@ where
 
     /// Appends the row to the end of the table data.
     async fn append_row(&mut self, row: T) -> anyhow::Result<()>;
+
+    /// Removes the row with the given key from the table data.
+    async fn remove_row(&mut self, key: K) -> anyhow::Result<()>;
 }
 
 /// Properties of an entry in a table.
@@ -84,6 +87,18 @@ where
     async fn append_row(&mut self, row: T) -> anyhow::Result<()> {
         let mut write_lock = self.data.try_write().map_err(|e| anyhow::anyhow!("{e}"))?;
         write_lock.push(row);
+        Ok(())
+    }
+
+    async fn remove_row(&mut self, key: K) -> anyhow::Result<()> {
+        let mut write_lock = self.data.try_write().map_err(|e| anyhow::anyhow!("{e}"))?;
+        let idx = write_lock.iter().position(|it| it.key() == key);
+        match idx {
+            Some(idx) => {
+                write_lock.remove(idx);
+            }
+            None => log::warn!("Could not find row with identifier {key} to update."),
+        }
         Ok(())
     }
 }
