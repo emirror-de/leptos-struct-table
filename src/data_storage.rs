@@ -35,6 +35,15 @@ where
 
     /// Removes the row with the given key from the table data.
     async fn remove_row(&mut self, key: K) -> anyhow::Result<()>;
+
+    /// Removes all entries from the storage.
+    async fn clear(&mut self) -> anyhow::Result<()>;
+
+    /// Replaces the storage with the given list.
+    async fn replace(&mut self, list: Vec<T>) -> anyhow::Result<()>;
+
+    /// Returns the full dataset.
+    async fn get_all(&self) -> anyhow::Result<Vec<T>>;
 }
 
 /// Properties of an entry in a table.
@@ -100,6 +109,21 @@ where
             None => log::warn!("Could not find row with identifier {key} to update."),
         }
         Ok(())
+    }
+
+    async fn clear(&mut self) -> anyhow::Result<()> {
+        self.replace(vec![]).await
+    }
+
+    async fn replace(&mut self, list: Vec<T>) -> anyhow::Result<()> {
+        let mut write_lock = self.data.try_write().map_err(|e| anyhow::anyhow!("{e}"))?;
+        *write_lock = list;
+        Ok(())
+    }
+
+    async fn get_all(&self) -> anyhow::Result<Vec<T>> {
+        let read_lock = self.data.try_read().map_err(|e| anyhow::anyhow!("{e}"))?;
+        Ok((*read_lock).clone())
     }
 }
 
