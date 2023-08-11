@@ -28,3 +28,6 @@ uuid = ["dep:uuid"]
 
 [package.metadata."docs.rs"]
 all-features = true
+
+[package.metadata.workspaces]
+independent = true
