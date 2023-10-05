@@ -30,8 +30,8 @@ fn main() {
     _ = console_log::init_with_level(log::Level::Debug);
     console_error_panic_hook::set_once();
 
-    mount_to_body(|cx| {
-        let provider = store_value(cx, MemoryStorage::new(
+    mount_to_body(|| {
+        let provider = store_value(MemoryStorage::new(
             vec![
                 Form {
                     id: 1,
@@ -51,7 +51,7 @@ fn main() {
             ]
         ));
 
-        view! { cx,
+        view! {
             <svg style="font-family: sans-serif;">
                 <FormTable data_provider=provider />
             </svg>

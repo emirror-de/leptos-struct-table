@@ -59,10 +59,10 @@ fn main() {
     _ = console_log::init_with_level(log::Level::Debug);
     console_error_panic_hook::set_once();
 
-    mount_to_body(|cx| {
-        let provider = store_value(cx, BookDataProvider {});
+    mount_to_body(|| {
+        let provider = store_value(BookDataProvider {});
 
-        view! { cx,
+        view! {
             <BookTable
                 data_provider=provider
             />
