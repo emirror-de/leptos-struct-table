@@ -29,16 +29,16 @@
 //! }
 //!
 //! fn main() {
-//!     mount_to_body(|cx| {
+//!     mount_to_body(|| {
 //!         // Create a provider with a few person items
-//!         let provider = store_value( cx, MemoryStorage::new(vec![
+//!         let provider = store_value(MemoryStorage::new(vec![
 //!             Person { id: 1, name: "John".to_string(), age: 32 },
 //!             Person { id: 2, name: "Jane".to_string(), age: 28 },
 //!             Person { id: 3, name: "Bob".to_string(), age: 45 },
 //!         ]));
 //!
 //!         // Use the generated component
-//!         view! { cx,
+//!         view! {
 //!             <PersonTable data_provider=provider />
 //!         }
 //!     });
@@ -249,7 +249,6 @@ pub struct TemperatureMeasurement {
 //! // Easy cell renderer that just displays an image from an URL.
 //! #[component]
 //! fn ImageTableCellRenderer<C>(
-//!     cx: Scope,
 //!     #[prop(into)] class: MaybeSignal<String>,
 //!     #[prop(into)] value: MaybeSignal<String>,
 //!     index: usize,
@@ -259,7 +258,7 @@ pub struct TemperatureMeasurement {
 //! where
 //!     C: Fn(String) + 'static,
 //! {
-//!     view! { cx,
+//!     view! {
 //!         <td class={ move || class.get() }>
 //!             <img src={ move || value.get() } alt="Book image" height="64"/>
 //!         </td>
