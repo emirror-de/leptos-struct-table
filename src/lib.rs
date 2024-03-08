@@ -21,6 +21,7 @@
 //!
 //! // This generates the component PersonTable
 //! #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
+//! #[table(selection_mode = "single")]
 //! pub struct Person {
 //!     #[table(key)]
 //!     id: u32,
@@ -39,7 +40,7 @@
 //!
 //!         // Use the generated component
 //!         view! {
-//!             <PersonTable data_provider=provider />
+//!             <PersonTable data_provider=provider selected_key=Some(0).into() />
 //!         }
 //!     });
 //! }
@@ -108,6 +109,7 @@ Example:
 # use async_trait::async_trait;
 # use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
 #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
+#[table(selection_mode = "single")]
 pub struct TemperatureMeasurement {
     #[table(key)]
     id: u32,
@@ -134,7 +136,7 @@ pub struct TemperatureMeasurement {
 //! # use serde::{Deserialize, Serialize};
 //! # use async_trait::async_trait;
 //! #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
-//! #[table(classes_provider = "TailwindClassesPreset")]
+//! #[table(classes_provider = "TailwindClassesPreset", selection_mode = "single")]
 //! pub struct Book {
 //!     #[table(key)]
 //!     id: u32,
@@ -156,7 +158,7 @@ pub struct TemperatureMeasurement {
 //! # use serde::{Deserialize, Serialize};
 //! # use async_trait::async_trait;
 //! #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
-//! #[table(classes_provider = "TailwindClassesPreset")]
+//! #[table(classes_provider = "TailwindClassesPreset", selection_mode = "single")]
 //! pub struct Book {
 //!     #[table(key)]
 //!     id: u32,
@@ -183,7 +185,7 @@ pub struct TemperatureMeasurement {
 //! # use serde::{Deserialize, Serialize};
 //! # use async_trait::async_trait;
 //! #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
-//! #[table(classes_provider = "TailwindClassesPreset")]
+//! #[table(classes_provider = "TailwindClassesPreset", selection_mode = "single")]
 //! pub struct Book {
 //!     #[table(key)]
 //!     id: u32,
@@ -238,6 +240,7 @@ pub struct TemperatureMeasurement {
 //! # use async_trait::async_trait;
 //! # use std::str::FromStr;
 //! #[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
+//! #[table(selection_mode = "single")]
 //! pub struct Book {
 //!     #[table(key)]
 //!     id: u32,
@@ -286,7 +289,10 @@ pub use class_providers::*;
 pub use components::*;
 pub use data_storage::*;
 pub use leptos_struct_table_macro::TableComponent;
-use serde::{Deserialize, Serialize};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 pub use sorting::*;
 use std::marker::PhantomData;
 
@@ -313,6 +319,16 @@ impl ColumnSort {
 ///
 /// Please refer to the [`getter` example](https://github.com/Synphonyte/leptos-struct-table/tree/master/examples/getter) for how this is used
 #[derive(
-    Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Default, Serialize, Deserialize,
+    Copy,
+    Clone,
+    Debug,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+    Default,
+    Serialize,
+    Deserialize,
 )]
 pub struct FieldGetter<T>(PhantomData<T>);
